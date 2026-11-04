@@ -249,6 +249,38 @@ table.t{width:100%;border-collapse:collapse}
  .toasts{left:10px;right:10px;bottom:84px}.toast{min-width:0;max-width:none}
  .banner{flex-wrap:wrap}
  .auth-form{padding:22px}
+ html,body{overflow-x:hidden;-webkit-text-size-adjust:100%}
+ main,.view,.card,.cols>*,.grid2>*,.grid3>*,.kv>*,.icard{min-width:0;max-width:100%}
+ .tabs{overflow-x:auto;scrollbar-width:none;padding:0 4px}.tabs::-webkit-scrollbar{display:none}.tabs button{white-space:nowrap;padding:11px 10px}
+ .tabs .sp,.tabs>.btn{display:none}
+ .kpis{grid-template-columns:1fr 1fr!important}
+ .in,select.in,textarea.in,.gscan input,.filters .in,input,select,textarea{font-size:16px!important}
+ .scanbox input{font-size:17px!important}
+ .card .hd .btn{flex:1 1 auto}
+ .row{gap:8px}
+ .icard .row .btn{flex:1 1 100%}
+ .mfoot .btn{flex:1 1 40%}
+ .lbl.lblprev{transform-origin:center;max-width:100%}
+ /* tables become cards on phones */
+ .tw{overflow-x:visible}
+ table.t.cfd,table.t.cfd tbody,table.t.cfd tr,table.t.cfd td{display:block;width:100%}
+ table.t.cfd thead{display:none}
+ table.t.cfd tbody{padding:4px 10px 10px}
+ table.t.cfd tr{border:1px solid var(--line);border-radius:12px;margin-top:10px;padding:4px 12px;background:#fff;box-shadow:0 1px 2px rgba(15,42,67,.05)}
+ table.t.cfd tr:hover td{background:transparent}
+ table.t.cfd td{display:flex;justify-content:space-between;align-items:center;gap:12px;border:0;border-bottom:1px dashed #eef2f6;padding:7px 0;min-height:34px;white-space:normal;text-align:left;word-break:break-word}
+ table.t.cfd td:last-child{border-bottom:0}
+ table.t.cfd td::before{content:attr(data-l);color:var(--mut);font-size:12px;font-weight:600;flex:none;max-width:46%;text-align:right;font-family:"Segoe UI",Tahoma,Arial,sans-serif;direction:rtl;letter-spacing:0}
+ table.t.cfd td>.cv{text-align:left;min-width:0;unicode-bidi:plaintext}
+ table.t.cfd td:first-child{display:block}
+ table.t.cfd td:not([data-l])::before{display:none}
+ table.t.cfd td:first-child{font-size:15px;justify-content:flex-start;text-align:right;border-bottom:1px solid var(--line);padding:9px 0}
+ table.t.cfd td:first-child::before{display:none}
+ table.t.cfd td.acts{justify-content:flex-start;flex-wrap:wrap;gap:6px;padding:9px 0}
+ table.t.cfd td.acts::before{display:none}
+ table.t.cfd td:empty{display:none}
+ table.t.cfd td>div{text-align:left}
+ table.t.cfd td:first-child>div{text-align:right}
 }
 .mtools{display:none}
 .mtools button{background:#f1f5f9;border:0;border-radius:9px;width:36px;height:36px;display:grid;place-items:center;color:var(--txt);cursor:pointer}
@@ -436,6 +468,13 @@ const I={ /* icons */
  flask:'<path d="M9 3h6M10 3v6L4.5 18.5A2 2 0 0 0 6.2 21.5h11.6a2 2 0 0 0 1.7-3L14 9V3"/><path d="M7 15h10"/>'};
 const ic=(n,s=18)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${I[n]}</svg>`;
 const LOGO=`<svg width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" rx="10" fill="#0b7285"/><path d="M16 9h8M17.5 9v8.5l-6.5 11a2 2 0 0 0 1.7 3h14.6a2 2 0 0 0 1.7-3l-6.5-11V9" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 24.5h12" stroke="#7dd3fc" stroke-width="2.4" stroke-linecap="round"/></svg>`;
+
+/* ---------------- phone: label table cells so tables can show as cards ---------------- */
+function cardify(){document.querySelectorAll('table.t:not(.cfd)').forEach(t=>{const hs=[...t.querySelectorAll('thead th')].map(th=>th.textContent.replace(/\s+/g,' ').trim());
+ t.querySelectorAll('tbody tr').forEach(tr=>{let i=0;[...tr.children].forEach(td=>{const span=+td.getAttribute('colspan')||1;if(span===1&&hs[i])td.setAttribute('data-l',hs[i]);
+  if(td!==tr.firstElementChild&&!td.classList.contains('acts')&&td.childNodes.length&&!(td.childNodes.length===1&&td.firstElementChild&&td.firstElementChild.classList.contains('cv'))){const w=document.createElement('span');w.className='cv';while(td.firstChild)w.appendChild(td.firstChild);td.appendChild(w);}
+  i+=span;});});t.classList.add('cfd');});}
+let _cfq=0;new MutationObserver(()=>{if(!_cfq){_cfq=1;requestAnimationFrame(()=>{_cfq=0;cardify();});}}).observe(document.documentElement,{childList:true,subtree:true});
 
 /* ---------------- camera barcode scanning ---------------- */
 const TOUCH=matchMedia('(pointer:coarse)').matches;
